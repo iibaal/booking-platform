@@ -35,9 +35,6 @@ public class Accommodation {
     @Column(nullable = false)
     private String country;
 
-    private Double latitude;
-    private Double longitude;
-
     @Column(name = "star_rating")
     private Integer starRating;
 
@@ -47,34 +44,36 @@ public class Accommodation {
     @Column(name = "contact_phone")
     private String contactPhone;
 
+    private Double latitude;
+    private Double longitude;
+
     @Column(name = "check_in_time")
     private LocalTime checkInTime;
 
     @Column(name = "check_out_time")
     private LocalTime checkOutTime;
 
-    @ManyToMany
-    @JoinTable(name = "accomodation_amenities", joinColumns = @JoinColumn(name = "accomodation_id"), inverseJoinColumns = @JoinColumn(name = "amenity_id"))
-    private Set<Amenity> amenities = new HashSet<>();
-
-    @OneToMany(mappedBy = "accomodation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Room> rooms = new HashSet<>();
-
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @ManyToMany
+    @JoinTable(name = "accommodation_amenities", joinColumns = @JoinColumn(name = "accommodation_id"), inverseJoinColumns = @JoinColumn(name = "amenity_id"))
+    private Set<Amenity> amenities = new HashSet<>();
+
+    @OneToMany(mappedBy = "accommodation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Room> rooms = new HashSet<>();
+
     @PrePersist
-    protected void onCreate() {
+    protected void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
-    protected void onUpdate() {
-        {
-            this.updatedAt = LocalDateTime.now();
-        }
+    protected void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }
